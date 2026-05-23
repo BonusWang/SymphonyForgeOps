@@ -1,0 +1,45 @@
+services:
+  forgeops-mysql:
+    image: mysql:8.0
+    ports:
+      - "${FORGEOPS_MYSQL_PORT:-3308}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${FORGEOPS_MYSQL_ROOT_PASSWORD:-forgeops_root_password}
+      MYSQL_DATABASE: ${FORGEOPS_MYSQL_DATABASE:-forgeops}
+      MYSQL_USER: ${FORGEOPS_MYSQL_USER:-forgeops}
+      MYSQL_PASSWORD: ${FORGEOPS_MYSQL_PASSWORD:-forgeops_dev_password}
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ../data/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$${MYSQL_USER} -p$${MYSQL_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  forgeops-api:
+    build:
+      context: ../backend
+      dockerfile: ../deploy/docker/forgeops-api.Dockerfile
+    ports:
+      - "8090:8090"
+    environment:
+      FORGEOPS_API_PORT: ${FORGEOPS_API_PORT:-8090}
+      FORGEOPS_DATASOURCE_URL: jdbc:mysql://forgeops-mysql:3306/${FORGEOPS_MYSQL_DATABASE:-forgeops}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      FORGEOPS_DATASOURCE_USERNAME: ${FORGEOPS_MYSQL_USER:-forgeops}
+      FORGEOPS_DATASOURCE_PASSWORD: ${FORGEOPS_MYSQL_PASSWORD:-forgeops_dev_password}
+    depends_on:
+      forgeops-mysql:
+        condition: service_healthy
+
+  forgeops-ui:
+    build:
+      context: ../frontend
+      dockerfile: ../deploy/docker/frontend.Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - forgeops-api

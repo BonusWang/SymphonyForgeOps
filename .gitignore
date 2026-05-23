@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.vite/
+target/
+build/
+.env
+.env.local
+logs/
+data/
+deploy/data/
+*.log
+.idea/
+.vscode/
