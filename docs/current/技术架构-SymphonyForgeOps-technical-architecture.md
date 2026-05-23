@@ -15,7 +15,7 @@ SymphonyForgeOps 要把“监督每个 AI 编码会话”升级为“管理可�
 
 ## 2. 总体架构
 
-MVP 初期：
+v1.0：
 
 ```text
 User
@@ -25,10 +25,11 @@ User
        -> Workflow Contract APIs
        -> Work Order APIs
        -> Command / Review / Dashboard APIs
+       -> Worker / Orchestrator APIs
        -> MySQL
 ```
 
-演进后：
+v1.x 演进后：
 
 ```text
 frontend
@@ -106,7 +107,7 @@ external integrations
 - hook execution。
 - cleanup safety。
 
-第一阶段只建表和 API；真实执行进入 worker 阶段。
+v1.0 已实现 root containment 和最小 workspace API；真实 clone/fetch/checkout 进入 v1.x。
 
 ### 3.5 Command Runner
 
@@ -133,7 +134,20 @@ Destructive command 不自动执行。
 - terminal/non-active state reconcile。
 - normal exit 进入 continuation 或 waiting_review，而不是自动 done。
 
-### 3.7 Agent Runtime Adapter
+### 3.7 Worker Runtime
+
+v1.0 worker 模型：
+
+- worker registration
+- heartbeat
+- capacity / current runs
+- assignment
+- stdout / stderr / exit code
+- run event log
+
+本机 SSH worker 使用 `protocol=ssh`、`host=localhost` 作为验收目标；复杂远程自动安装和主机池调度进入 v1.x。
+
+### 3.8 Agent Runtime Adapter
 
 适配：
 
@@ -153,7 +167,7 @@ Destructive command 不自动执行。
 - changed files
 - artifacts
 
-### 3.8 Review Gate
+### 3.9 Review Gate
 
 Review Gate 读取：
 
@@ -220,15 +234,16 @@ MySQL 是控制平面和运行账本。
 - S2: workflow_contracts
 - S3: command_runs, isolated_workspaces
 - S4: agent_runs, run_attempts, run_events, retry_queue
-- S5: agent_sessions, adapter_configs, usage_records
-- S6: github_links, check_runs, review_findings, human_decisions
-- S7: artifacts, knowledge_exports
+- S5: agent_adapter_configs
+- S6: github_links, review_findings, human_decisions
+- S7: artifacts
+- V1: worker_hosts, worker_heartbeats, worker_assignments
 
 不在早期创建所有长期表。
 
 ## 6. Technology Stack
 
-- Java 21 LTS target.
+- Java 17 target.
 - Spring Boot 3.x.
 - Maven.
 - MySQL 8.

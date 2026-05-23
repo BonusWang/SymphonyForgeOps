@@ -5,7 +5,7 @@ spring:
   application:
     name: forgeops-api
   datasource:
-    url: ${FORGEOPS_DATASOURCE_URL:jdbc:mysql://localhost:3308/forgeops?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    url: ${FORGEOPS_DATASOURCE_URL:jdbc:mysql://localhost:3306/forgeops?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
     username: ${FORGEOPS_DATASOURCE_USERNAME:forgeops}
     password: ${FORGEOPS_DATASOURCE_PASSWORD:forgeops_dev_password}
     driver-class-name: com.mysql.cj.jdbc.Driver

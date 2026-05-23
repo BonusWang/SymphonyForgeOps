@@ -2,9 +2,9 @@
 
 ## Version Index
 
-- 最新版本：v0.2
-- 日期：2026-05-23
-- 当前指针：(x) S0 Governance / Environment
+- 最新版本：v1.0-dev
+- 日期：2026-05-24
+- 当前指针：(x) V1 Local Remote Worker
 - 目标：按 WikiForge 的项目模式，把 SymphonyForgeOps 发展为完整非 MVP 研发控制台，但每轮只做可验证切片。
 
 ## Current State
@@ -12,10 +12,10 @@
 - [x] GitHub `main` 已合并远端 Initial commit 并普通 push。
 - [x] 当前项目骨架已建立：Spring Boot API、Vue Dashboard、MySQL migration、Docker Compose。
 - [x] 已补充 openai/symphony + WikiForge 学习后的项目治理规则。
-- [ ] Java 21 LTS 尚未成为默认 shell Java。
+- [x] 项目 Java 基线调整为 Java 17，并使用本机 Corretto 17 验证。
 - [ ] Maven 用户 settings 仍指向不可达私有 mirror，验证时需要临时 settings 或修复本机配置。
-- [ ] Dashboard 仍使用内存数据。
-- [ ] P1 持久化实现 WIP 已暂存：`codex-p1-wip-before-wikiforge-replan`。
+- [x] Dashboard 已从 MySQL 聚合读取。
+- [x] P1 WIP 已恢复并按 v1 路线重做。
 
 ## Stage Roadmap
 
@@ -32,7 +32,7 @@
 
 验证门禁：T0。
 
-### ( ) S1 Persistent Control Plane
+### (x) S1 Persistent Control Plane
 
 目标：Project Registry、Work Order、Command Template、Review Item 和 Dashboard 全部从 MySQL 读取。
 
@@ -52,7 +52,7 @@
 
 验证门禁：T1 + MySQL Flyway 空库迁移。
 
-### ( ) S2 Workflow Contract
+### (x) S2 Workflow Contract
 
 目标：实现 `WORKFLOW.md` parser、验证、reload 和 last-known-good 账本。
 
@@ -67,7 +67,7 @@
 
 验证门禁：T1。
 
-### ( ) S3 Command And Workspace Safety
+### (x) S3 Command And Workspace Safety
 
 目标：命令模板、命令运行、workspace key、root containment、hook 机制落地。
 
@@ -82,7 +82,7 @@
 
 验证门禁：T1 + targeted path-safety tests。
 
-### ( ) S4 Orchestrator Skeleton
+### (x) S4 Orchestrator Skeleton
 
 目标：实现单一调度权威的最小状态机。
 
@@ -99,7 +99,7 @@
 
 验证门禁：T1。
 
-### ( ) S5 Agent Runtime Adapters
+### (x) S5 Agent Runtime Adapters
 
 目标：接入 Manual、Codex、Claude Code、OpenHands 的统一 adapter registry。
 
@@ -115,7 +115,7 @@ Codex app-server 先做本机可配置命令，不强制每台机器都可运行
 
 验证门禁：T1 + real-integration smoke 可跳过但必须记录原因。
 
-### ( ) S6 GitHub And Review Gate
+### (x) S6 GitHub And Review Gate
 
 目标：GitHub issue/PR 同步、review gate 和 human decision 闭环。
 
@@ -130,7 +130,7 @@ Codex app-server 先做本机可配置命令，不强制每台机器都可运行
 
 验证门禁：T1 + GitHub smoke。
 
-### ( ) S7 Observability And Knowledge Handoff
+### (x) S7 Observability And Knowledge Handoff
 
 目标：完善 Dashboard、日志、handoff artifact，并与 WikiForge 知识沉淀联动。
 
@@ -145,7 +145,7 @@ Codex app-server 先做本机可配置命令，不强制每台机器都可运行
 
 验证门禁：T2 + browser check。
 
-### ( ) V1 Multi-Machine Runtime
+### (x) V1 Multi-Machine Runtime
 
 目标：远程 worker、主机容量、长运行任务和更完整的自动化。
 
@@ -153,6 +153,7 @@ Codex app-server 先做本机可配置命令，不强制每台机器都可运行
 
 - S1-S7 已形成可用本地闭环。
 - workspace/command/review 安全边界通过验证。
+- v1.0 范围限定为本机 SSH worker 语义和单 worker capacity dispatch。
 
 ## Parallel Work Rules
 
@@ -170,6 +171,4 @@ Codex app-server 先做本机可配置命令，不强制每台机器都可运行
 
 ## Next Recommended Work Order
 
-`S0-DOC-001`：完成 README、`.env.example`、首个 archive index，然后提交推送。
-
-`S1-PERSIST-001`：恢复 stash 中的 P1 WIP，按新的 DDD / Skill 规则拆成 Project + Work Order 两个 TDD 小任务。
+`V1-RELEASE-001`：完成发布前安全扫描、API smoke、GitHub merge/tag/release。

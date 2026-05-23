@@ -46,7 +46,7 @@ SymphonyForgeOps 是独立的个人 AI 研发控制台，用于管理多个外�
 
 采用：
 
-- Java 21 + Spring Boot 3.x + Maven。
+- Java 17 + Spring Boot 3.x + Maven。
 - Vue 3 + Vite + TypeScript + Element Plus + Pinia + Axios。
 - MySQL 8 + Flyway。
 - `docs/current` 当前事实、`docs/archive` 快照、`docs/superpowers/plans` 可执行 Work Order。
@@ -109,7 +109,26 @@ Docker Compose 可以保留独立 MySQL 服务用于干净部署，但 README �
 
 ## 2026-05-23 当前阻塞
 
-- 当前系统 Java 默认路径是 Java 8。
-- 未发现精确 JDK 21，但存在 Trae bundled JDK 25，可临时用于编译 Java 21 target。
-- 正式验收仍要求安装或切换到 Java 21 LTS。
+- 项目 Java 基线已调整为 Java 17，优先使用本机 Corretto 17。
+- 不使用 Trae bundled JDK 25 作为项目执行环境。
 - 用户级 Maven settings 指向不可达私有 mirror；验证时需使用临时 settings 或修复本机 Maven 配置。
+
+## 2026-05-24 v1.0 单服务运行层决策
+
+v1.0 保持 `forgeops-api` 单服务，但已经把运行层账本落库：
+
+- `workflow_contracts`
+- `command_runs`
+- `isolated_workspaces`
+- `agent_runs`
+- `run_events`
+- `worker_hosts`
+- `worker_heartbeats`
+- `worker_assignments`
+- `agent_adapter_configs`
+- `github_links`
+- `review_findings`
+- `human_decisions`
+- `artifacts`
+
+远程 worker 的正式 v1 验收目标采用本机 SSH worker 语义：worker 使用 `protocol=ssh`、`host=localhost` 注册，当前实现以本机 shell 执行作为可测试的本地 worker 执行路径。复杂主机池调度、远程自动安装、透明故障迁移进入 v1.x。

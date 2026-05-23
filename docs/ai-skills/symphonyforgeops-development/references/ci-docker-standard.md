@@ -10,7 +10,7 @@
 
 Preferred local defaults:
 
-- Java 21 LTS.
+- Java 17.
 - Maven 3.9.x with `E:/repository`.
 - Node 20 or 22 for predictable Vite builds.
 - MySQL 8 on localhost.

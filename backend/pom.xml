@@ -22,7 +22,7 @@
     </modules>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
         <springdoc.version>2.6.0</springdoc.version>
     </properties>
 
@@ -36,4 +36,3 @@
         </dependencies>
     </dependencyManagement>
 </project>
-

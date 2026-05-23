@@ -2,9 +2,9 @@
 
 ## Version Index
 
-- 最新版本：v0.2
-- 日期：2026-05-23
-- 最新小节：`2026-05-23 openai/symphony + WikiForge 模式重调`
+- 最新版本：v1.0-dev
+- 日期：2026-05-24
+- 最新小节：`2026-05-24 v1.0 Java 17 与本地 worker 闭环`
 
 ## 2026-05-23 项目启动
 
@@ -33,8 +33,8 @@ GitHub 状态：
 - Docker 可用。
 - WikiForge MySQL 容器 `wikiforge-mysql` 在 3306 healthy。
 - 已在该 MySQL 中创建 `forgeops` schema 和 `forgeops` 用户。
-- Shell 默认 Java 是 1.8，不满足项目 Java 21 要求。
-- 未发现精确 JDK 21；发现 Trae bundled JDK 25，可临时编译 Java 21 target。
+- Shell 默认 Java 是 1.8；当时按旧计划不满足 Java 21 要求。
+- 未发现精确 JDK 21；后来项目基线调整为 Java 17，不再使用 Trae bundled JDK 25。
 - Maven 可用，但用户级 `settings.xml` 指向不可达私有 mirror `nexus.minshenglife.com`。
 - 已用临时 Maven settings 验证依赖可从公开仓库解析。
 
@@ -113,3 +113,27 @@ WikiForge 的可复制价值是工程治理方式：
 - 创建首个 archive index。
 - 提交推送 S0 文档治理变更。
 - 再恢复 P1 WIP，并按新项目 Skill 拆分重做持久化切片。
+
+## 2026-05-24 v1.0 Java 17 与本地 worker 闭环
+
+架构调整：
+
+- 项目 Java 基线从 Java 21 调整为 Java 17，使用本机 Corretto 17 作为稳定执行环境。
+- 默认 datasource 改为复用 WikiForge MySQL 3306 的 `forgeops` schema。
+- Docker Compose 继续保留独立 MySQL 3308 模式。
+
+本轮实现：
+
+- Project Registry、Work Order、Dashboard 从 MySQL 读取。
+- `WORKFLOW.md` reload 保存 typed workflow contract。
+- Workspace root containment、workspace key 清洗、破坏性命令审批 gate。
+- Orchestrator dispatch、worker registration、heartbeat、capacity、assignment、run event。
+- Agent adapter config、GitHub link、review finding、human decision、artifact 表。
+- 前端 Dashboard 展示 workers、GitHub links、review findings、human decisions。
+
+验证：
+
+- `mvn -B -s <temp-settings> -pl forgeops-api -am test` 通过，6 tests。
+- `npm install` 通过。
+- `npm run build` 通过。
+- `docker compose -f deploy/docker-compose.dev.yml config` 通过。

@@ -20,7 +20,7 @@ GitHub repos
 
 ## Technology Stack
 
-- Backend: Java 21, Spring Boot 3.x, Maven
+- Backend: Java 17, Spring Boot 3.x, Maven
 - Frontend: Vue 3, Vite, TypeScript, Element Plus, Pinia, Axios
 - Database: MySQL 8
 - Deployment: local first, Docker Compose ready
@@ -41,13 +41,14 @@ E:\repository
 
 The backend Maven wrapper config is stored in `backend/.mvn/maven.config`, so Maven commands run from `backend` will use that repository automatically.
 
-## MVP Scope
+## v1.0 Scope
 
-- Register independent repositories.
-- Track work orders and implementation runs.
-- Store commands for build, test, review, and local startup.
-- Show a dashboard for project health and review status.
-- Prepare the domain model for future Codex, Claude Code, OpenHands, PR-Agent, and GitHub integration.
+- Register independent repositories and work orders in MySQL.
+- Reload `WORKFLOW.md` into typed workflow contracts.
+- Store commands, command runs, isolated workspaces, review gates, GitHub links, and human decisions.
+- Dispatch a ready work order through the orchestrator to a registered local SSH-style worker target.
+- Show dashboard sections for projects, work orders, agent runs, workers, GitHub links, review findings, and human decisions.
+- Keep Codex, Claude Code, and OpenHands as adapter configs until their external smoke checks are explicitly enabled.
 
 ## Suggested First Projects
 

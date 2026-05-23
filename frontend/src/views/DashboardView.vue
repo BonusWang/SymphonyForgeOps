@@ -6,13 +6,13 @@ import {
   Connection,
   DataBoard,
   Files,
-  GitBranch,
-  ListChecks,
+  Management,
   Operation,
-  Play,
   Refresh,
-  ShieldCheck,
-  Timer
+  Share,
+  Tickets,
+  Timer,
+  VideoPlay
 } from '@element-plus/icons-vue'
 import { useDashboardStore } from '../stores/dashboard'
 
@@ -33,15 +33,16 @@ onMounted(() => {
       <nav class="sidebar-menu">
         <div class="menu-group-label">工作台</div>
         <a class="nav-item active"><el-icon><DataBoard /></el-icon> 控制台</a>
-        <a class="nav-item"><el-icon><GitBranch /></el-icon> 项目注册</a>
-        <a class="nav-item"><el-icon><ListChecks /></el-icon> 工作单</a>
-        <a class="nav-item"><el-icon><Play /></el-icon> Agent 运行</a>
+        <a class="nav-item"><el-icon><Share /></el-icon> 项目注册</a>
+        <a class="nav-item"><el-icon><Tickets /></el-icon> 工作单</a>
+        <a class="nav-item"><el-icon><VideoPlay /></el-icon> Agent 运行</a>
         <div class="menu-group-label">治理</div>
-        <a class="nav-item"><el-icon><ShieldCheck /></el-icon> 代码审核</a>
+        <a class="nav-item"><el-icon><Management /></el-icon> 代码审核</a>
         <a class="nav-item"><el-icon><Files /></el-icon> 工作区</a>
         <a class="nav-item"><el-icon><Operation /></el-icon> 工作流契约</a>
+        <a class="nav-item"><el-icon><Connection /></el-icon> Worker</a>
       </nav>
-      <div class="sidebar-footer">v0.0.1 · local first</div>
+      <div class="sidebar-footer">v1.0 · Java 17</div>
     </aside>
 
     <section class="main">
@@ -74,21 +75,21 @@ onMounted(() => {
 
         <div v-if="dashboard.snapshot" class="stats-grid">
           <section class="stat-card">
-            <div class="stat-icon success"><el-icon><GitBranch /></el-icon></div>
+            <div class="stat-icon success"><el-icon><Share /></el-icon></div>
             <div>
               <span>托管项目</span>
               <strong>{{ dashboard.snapshot.projectCount }}</strong>
             </div>
           </section>
           <section class="stat-card">
-            <div class="stat-icon info"><el-icon><ListChecks /></el-icon></div>
+            <div class="stat-icon info"><el-icon><Tickets /></el-icon></div>
             <div>
               <span>开放工作单</span>
               <strong>{{ dashboard.snapshot.openWorkOrderCount }}</strong>
             </div>
           </section>
           <section class="stat-card">
-            <div class="stat-icon success"><el-icon><Play /></el-icon></div>
+            <div class="stat-icon success"><el-icon><VideoPlay /></el-icon></div>
             <div>
               <span>运行中 Agent</span>
               <strong>{{ dashboard.snapshot.runningAgentCount }}</strong>
@@ -102,7 +103,7 @@ onMounted(() => {
             </div>
           </section>
           <section class="stat-card">
-            <div class="stat-icon danger"><el-icon><ShieldCheck /></el-icon></div>
+            <div class="stat-icon danger"><el-icon><Management /></el-icon></div>
             <div>
               <span>待审核</span>
               <strong>{{ dashboard.snapshot.pendingReviewCount }}</strong>
@@ -111,8 +112,8 @@ onMounted(() => {
           <section class="stat-card">
             <div class="stat-icon info"><el-icon><Connection /></el-icon></div>
             <div>
-              <span>工作流契约</span>
-              <strong>{{ dashboard.snapshot.workflowContractCount }}</strong>
+              <span>在线 Worker</span>
+              <strong>{{ dashboard.workers.filter((worker) => worker.status === 'online').length }}</strong>
             </div>
           </section>
         </div>
@@ -153,6 +154,21 @@ onMounted(() => {
           <div class="two-column-grid">
             <section class="card">
               <div class="panel-header">
+                <h2>Worker 运行层</h2>
+                <el-icon><Connection /></el-icon>
+              </div>
+              <el-table :data="dashboard.workers" class="dark-table" size="large">
+                <el-table-column prop="displayName" label="Worker" min-width="180" />
+                <el-table-column prop="protocol" label="协议" width="90" />
+                <el-table-column prop="status" label="状态" width="110" />
+                <el-table-column prop="availableCapacity" label="可用" width="90" />
+                <el-table-column prop="currentRuns" label="运行" width="90" />
+                <el-table-column prop="host" label="主机" min-width="160" />
+              </el-table>
+            </section>
+
+            <section class="card">
+              <div class="panel-header">
                 <h2>Agent 运行</h2>
                 <el-icon><Clock /></el-icon>
               </div>
@@ -165,14 +181,40 @@ onMounted(() => {
 
             <section class="card">
               <div class="panel-header">
-                <h2>审核队列</h2>
+                <h2>审核发现</h2>
                 <el-icon><CircleCheck /></el-icon>
               </div>
-              <el-table :data="dashboard.snapshot.reviewItems" class="dark-table" size="large">
-                <el-table-column prop="type" label="类型" width="120" />
-                <el-table-column prop="riskLevel" label="风险" width="110" />
+              <el-table :data="dashboard.reviews?.findings || []" class="dark-table" size="large">
+                <el-table-column prop="source" label="来源" width="110" />
+                <el-table-column prop="severity" label="风险" width="110" />
                 <el-table-column prop="status" label="状态" width="120" />
                 <el-table-column prop="summary" label="结论" min-width="260" />
+              </el-table>
+            </section>
+
+            <section class="card">
+              <div class="panel-header">
+                <h2>GitHub 链接</h2>
+                <el-icon><Share /></el-icon>
+              </div>
+              <el-table :data="dashboard.githubLinks" class="dark-table" size="large">
+                <el-table-column prop="workOrderId" label="工作单" width="170" />
+                <el-table-column prop="checkStatus" label="检查" width="110" />
+                <el-table-column prop="issueUrl" label="Issue" min-width="260" />
+                <el-table-column prop="prUrl" label="PR" min-width="260" />
+              </el-table>
+            </section>
+
+            <section class="card">
+              <div class="panel-header">
+                <h2>人工决策</h2>
+                <el-icon><Management /></el-icon>
+              </div>
+              <el-table :data="dashboard.reviews?.humanDecisions || []" class="dark-table" size="large">
+                <el-table-column prop="workOrderId" label="工作单" width="170" />
+                <el-table-column prop="decision" label="决策" width="120" />
+                <el-table-column prop="decider" label="决策人" width="130" />
+                <el-table-column prop="reason" label="原因" min-width="260" />
               </el-table>
             </section>
           </div>
