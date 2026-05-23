@@ -81,7 +81,25 @@ docker compose -f deploy/docker-compose.dev.yml config
 
 ## MySQL 8
 
-Default local Docker settings:
+Preferred local development on this machine reuses the WikiForge MySQL container and creates a separate schema:
+
+```text
+Host: localhost
+Port: 3306
+Database: forgeops
+User: forgeops
+Password: forgeops_dev_password
+```
+
+Runtime environment variables:
+
+```text
+FORGEOPS_DATASOURCE_URL=jdbc:mysql://localhost:3306/forgeops?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+FORGEOPS_DATASOURCE_USERNAME=forgeops
+FORGEOPS_DATASOURCE_PASSWORD=forgeops_dev_password
+```
+
+Docker Compose can still start an isolated ForgeOps MySQL service when a clean database is preferred:
 
 ```text
 Database: forgeops
@@ -90,7 +108,7 @@ Password: forgeops_dev_password
 Port: 3308
 ```
 
-Runtime environment variables:
+Isolated Docker database runtime variables:
 
 ```text
 FORGEOPS_DATASOURCE_URL=jdbc:mysql://localhost:3308/forgeops?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true

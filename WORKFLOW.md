@@ -30,20 +30,25 @@ codex:
 
 # SymphonyForgeOps Workflow
 
-You are running an isolated implementation attempt for a managed project.
+You are working on SymphonyForgeOps itself or running an isolated implementation attempt for a managed project.
 
 Follow this order:
 
-1. Read the managed project's `AGENTS.md` or equivalent project rules.
-2. Confirm the work order scope, allowed files, forbidden files, and verification commands.
-3. Work only inside the assigned workspace.
-4. Preserve user changes and never run destructive commands without explicit approval.
-5. Run the declared verification command before handoff whenever the local environment supports it.
-6. Produce a completion report with changed files, verification results, risks, and review notes.
+1. Read `AGENTS.md`.
+2. Read `docs/ai-skills/symphonyforgeops-development/SKILL.md`.
+3. Read the current roadmap and architecture decisions under `docs/current/`.
+4. Confirm the work order scope, allowed files, forbidden files, contracts, and verification gate.
+5. Preserve user changes and never run destructive commands without explicit approval.
+6. For managed project work, work only inside the assigned workspace.
+7. Run the declared verification command before handoff whenever the local environment supports it.
+8. Update roadmap, developer log, and archive/index documents when a stage changes.
+9. Produce a completion report with changed files, verification results, risks, and review notes.
 
 Handoff state:
 
 - If implementation and tests pass, move the work order to `waiting_review`.
 - If blocked by environment or missing context, move the work order to `blocked`.
 - If code changes are made, require human review before merge.
-
+- If the task is documentation/governance only, use T0 verification.
+- If the task changes backend behavior, use TDD and T1 verification.
+- If the task changes frontend behavior, use T2 verification.
