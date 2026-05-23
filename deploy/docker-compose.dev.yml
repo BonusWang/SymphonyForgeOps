@@ -25,7 +25,7 @@ services:
       context: ../backend
       dockerfile: ../deploy/docker/forgeops-api.Dockerfile
     ports:
-      - "8090:8090"
+      - "${FORGEOPS_API_HOST_PORT:-8090}:8090"
     environment:
       FORGEOPS_API_PORT: ${FORGEOPS_API_PORT:-8090}
       FORGEOPS_DATASOURCE_URL: jdbc:mysql://forgeops-mysql:3306/${FORGEOPS_MYSQL_DATABASE:-forgeops}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
@@ -40,6 +40,6 @@ services:
       context: ../frontend
       dockerfile: ../deploy/docker/frontend.Dockerfile
     ports:
-      - "5173:80"
+      - "${FORGEOPS_UI_HOST_PORT:-5173}:80"
     depends_on:
       - forgeops-api

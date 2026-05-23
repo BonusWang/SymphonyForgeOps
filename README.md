@@ -80,6 +80,31 @@ Docker:
 docker compose -f deploy/docker-compose.dev.yml config
 ```
 
+When WikiForge or another local service already uses `8090` or `5173`, override only the host ports:
+
+```powershell
+$env:FORGEOPS_API_HOST_PORT="18091"
+$env:FORGEOPS_UI_HOST_PORT="15173"
+$env:FORGEOPS_MYSQL_PORT="13308"
+docker compose -p forgeops-v1 -f deploy/docker-compose.dev.yml up -d --build
+```
+
+Smoke checks:
+
+```bash
+curl http://localhost:18091/api/v1/health
+curl http://localhost:18091/actuator/health
+curl http://localhost:15173/api/v1/dashboard
+```
+
+## CI/CD
+
+GitHub Actions workflow `.github/workflows/ci.yml` runs:
+
+- Backend tests on Temurin Java 17 with MySQL 8.
+- Frontend install/build on Node 22 using `npm ci`.
+- Docker Compose config validation and image build.
+
 ## MySQL 8
 
 Preferred local development on this machine reuses the WikiForge MySQL container and creates a separate schema:

@@ -137,3 +137,32 @@ WikiForge 的可复制价值是工程治理方式：
 - `npm install` 通过。
 - `npm run build` 通过。
 - `docker compose -f deploy/docker-compose.dev.yml config` 通过。
+
+## 2026-05-24 CI/CD 与 Docker 启动自检
+
+本轮调整：
+
+- GitHub Actions CI 改为 Temurin Java 17。
+- 前端 CI 和 Docker build 使用 `npm ci`。
+- Docker API runtime 改为 `eclipse-temurin:17-jre`，build stage 使用 `maven:3.9.9-eclipse-temurin-17`。
+- Docker Compose 宿主端口支持 `FORGEOPS_API_HOST_PORT`、`FORGEOPS_UI_HOST_PORT`、`FORGEOPS_MYSQL_PORT` 覆盖，避免和 WikiForge 的 8090 等端口冲突。
+- 新增 backend/frontend `.dockerignore`，避免 `target`、`node_modules`、`dist`、日志进入 build context。
+
+本机启动参数：
+
+```powershell
+$env:FORGEOPS_API_HOST_PORT="18091"
+$env:FORGEOPS_UI_HOST_PORT="15173"
+$env:FORGEOPS_MYSQL_PORT="13308"
+docker compose -p forgeops-v1 -f deploy/docker-compose.dev.yml up -d --build
+```
+
+验证结果：
+
+- 后端 `mvn -B -s <temp-settings> -pl forgeops-api -am test` 通过，6 tests。
+- 前端 `npm ci && npm run build` 通过。
+- Docker Compose config 通过。
+- Docker stack 已启动：API `18091`、UI `15173`、MySQL `13308`。
+- `curl http://localhost:18091/api/v1/health` 通过。
+- `curl http://localhost:18091/actuator/health` 通过。
+- `curl http://localhost:15173/api/v1/dashboard` 通过。
