@@ -26,6 +26,7 @@ User
        -> Work Order APIs
        -> Command / Review / Dashboard APIs
        -> Worker / Orchestrator APIs
+       -> Codex CLI adapter
        -> MySQL
 ```
 
@@ -134,6 +135,8 @@ Destructive command 不自动执行。
 - terminal/non-active state reconcile。
 - normal exit 进入 continuation 或 waiting_review，而不是自动 done。
 
+v1.0 当前实现：`implementationAgent=Manual` 继续执行工单命令；`implementationAgent=Codex` 通过本机 `codex exec` 调用 Codex CLI，stdout/stderr、exit code、run event 和 agent summary 全部落库。
+
 ### 3.7 Worker Runtime
 
 v1.0 worker 模型：
@@ -155,6 +158,13 @@ v1.0 worker 模型：
 - Codex adapter
 - Claude Code adapter
 - OpenHands adapter
+
+Codex adapter 当前使用本机 CLI：
+
+- 从受管项目 root 运行 `codex exec`。
+- prompt 由 project/work order/test command 渲染。
+- 默认 timeout 为 300 秒，可用 `FORGEOPS_CODEX_TIMEOUT_SECONDS` 调整。
+- `FORGEOPS_CODEX_COMMAND_TEMPLATE` 用于 deterministic smoke 和测试替身。
 
 统一记录：
 

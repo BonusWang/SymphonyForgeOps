@@ -89,12 +89,21 @@ changes_requested
 archived
 ```
 
+Agent 运行规则：
+
+```text
+Manual -> 执行 work order testCommand
+Codex -> 调用本机 codex exec，并记录 stdout/stderr/exit code/run events
+Claude/OpenHands -> v1.0 保存 adapter config，真实执行进入后续切片
+```
+
 ## 6. 安全规则
 
 - Token/API key/PAT 不进 Git。
 - Command log 脱敏。
 - destructive command 必须 `requires_approval`。
 - workspace 路径必须 root containment。
+- Codex adapter 默认从受管项目 root 启动，timeout 默认 300 秒。
 - 删除 workspace 前必须校验真实路径。
 - 不自动 merge。
 - 不删除受管项目主目录。

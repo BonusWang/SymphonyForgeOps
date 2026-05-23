@@ -4,7 +4,7 @@
 
 - 最新版本：v1.0-dev
 - 日期：2026-05-24
-- 最新小节：`2026-05-24 v1.0 Java 17 与本地 worker 闭环`
+- 最新小节：`2026-05-24 WikiForge Codex Agent 验证闭环`
 
 ## 2026-05-23 项目启动
 
@@ -166,3 +166,25 @@ docker compose -p forgeops-v1 -f deploy/docker-compose.dev.yml up -d --build
 - `curl http://localhost:18091/api/v1/health` 通过。
 - `curl http://localhost:18091/actuator/health` 通过。
 - `curl http://localhost:15173/api/v1/dashboard` 通过。
+
+## 2026-05-24 WikiForge Codex Agent 验证闭环
+
+本轮目标：
+
+- 新建 WikiForge 受管项目。
+- 指派测试验证 Work Order。
+- 通过 Orchestrator 调用 Codex agent 处理工单。
+- 将最终结果写回 agent run、worker assignment 和 run event。
+
+架构调整：
+
+- `implementationAgent=Manual` 保持原有本机命令执行路径。
+- `implementationAgent=Codex` 改为调用本机 `codex exec`。
+- Codex prompt 由 project、work order、verification command 渲染。
+- 新增 `FORGEOPS_CODEX_TIMEOUT_SECONDS` 和 `FORGEOPS_CODEX_COMMAND_TEMPLATE`。
+- 子进程 stdout/stderr 改为并行读取，避免 agent 输出较多时阻塞。
+
+验证：
+
+- 新增 `CodexAgentDispatchTests`，先 RED 确认调度器不会调用 Codex adapter，再实现 GREEN。
+- targeted backend test 已通过。

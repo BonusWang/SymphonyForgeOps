@@ -132,3 +132,20 @@ v1.0 保持 `forgeops-api` 单服务，但已经把运行层账本落库：
 - `artifacts`
 
 远程 worker 的正式 v1 验收目标采用本机 SSH worker 语义：worker 使用 `protocol=ssh`、`host=localhost` 注册，当前实现以本机 shell 执行作为可测试的本地 worker 执行路径。复杂主机池调度、远程自动安装、透明故障迁移进入 v1.x。
+
+## 2026-05-24 Codex CLI Adapter 决策
+
+采用本机 `codex exec` 作为 v1 Codex agent adapter 的真实执行路径。
+
+原因：
+
+- 满足 WikiForge 项目验证工单需要真实调用 Codex agent 的交付标准。
+- 避免在 v1.0 中引入额外 app-server protocol 或远程 worker 安装复杂度。
+- `codex exec -C <project-root>` 能直接把运行上下文限定在受管项目目录。
+- 调度器已记录 worker assignment、stdout/stderr、exit code、run event 和 agent summary。
+
+约束：
+
+- 默认 timeout 为 300 秒，可通过 `FORGEOPS_CODEX_TIMEOUT_SECONDS` 调整。
+- `FORGEOPS_CODEX_COMMAND_TEMPLATE` 只用于测试替身或本机 smoke override，正式路径保持 Codex CLI。
+- Claude Code / OpenHands 继续作为 adapter config 保存，真实外部执行进入后续切片。

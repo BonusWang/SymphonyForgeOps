@@ -22,3 +22,6 @@ management:
 
 forgeops:
   version: 0.0.1
+  codex:
+    timeout-seconds: ${FORGEOPS_CODEX_TIMEOUT_SECONDS:300}
+    command-template: ${FORGEOPS_CODEX_COMMAND_TEMPLATE:}

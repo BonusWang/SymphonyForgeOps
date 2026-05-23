@@ -47,8 +47,9 @@ The backend Maven wrapper config is stored in `backend/.mvn/maven.config`, so Ma
 - Reload `WORKFLOW.md` into typed workflow contracts.
 - Store commands, command runs, isolated workspaces, review gates, GitHub links, and human decisions.
 - Dispatch a ready work order through the orchestrator to a registered local SSH-style worker target.
+- Invoke the local Codex CLI for work orders whose `implementationAgent` is `Codex`, and persist stdout/stderr, exit code, run events, and final summary.
 - Show dashboard sections for projects, work orders, agent runs, workers, GitHub links, review findings, and human decisions.
-- Keep Codex, Claude Code, and OpenHands as adapter configs until their external smoke checks are explicitly enabled.
+- Keep Claude Code and OpenHands as adapter configs until their external smoke checks are explicitly enabled.
 
 ## Suggested First Projects
 
@@ -96,6 +97,12 @@ curl http://localhost:18091/api/v1/health
 curl http://localhost:18091/actuator/health
 curl http://localhost:15173/api/v1/dashboard
 ```
+
+Codex agent dispatch:
+
+- `implementationAgent=Codex` invokes `codex exec` from the managed project root.
+- `FORGEOPS_CODEX_TIMEOUT_SECONDS` controls the adapter timeout, default `300`.
+- `FORGEOPS_CODEX_COMMAND_TEMPLATE` can override the CLI command for deterministic local smoke tests.
 
 ## CI/CD
 

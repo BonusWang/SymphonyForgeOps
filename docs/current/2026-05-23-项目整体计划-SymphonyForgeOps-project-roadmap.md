@@ -95,7 +95,7 @@
 - terminal/non-active reconcile
 - event log
 
-暂不做真实 agent subprocess；可以先用 Manual Adapter。
+v1.0 已支持 Manual 命令执行路径，并在 Codex 工单中调用本机 Codex CLI。
 
 验证门禁：T1。
 
@@ -111,7 +111,7 @@
 - usage/cost
 - artifact summary
 
-Codex app-server 先做本机可配置命令，不强制每台机器都可运行。
+Codex adapter 当前采用本机 `codex exec`；Claude Code / OpenHands 继续先保存配置和 smoke 状态。
 
 验证门禁：T1 + real-integration smoke 可跳过但必须记录原因。
 
@@ -171,4 +171,4 @@ Codex app-server 先做本机可配置命令，不强制每台机器都可运行
 
 ## Next Recommended Work Order
 
-`V1-RELEASE-001`：完成发布前安全扫描、API smoke、GitHub merge/tag/release。
+`V1-WIKIFORGE-CODEX-VERIFY`：用 WikiForge 受管项目创建验证工单，派发给 Codex agent，并确认最终结果回写 Dashboard/run events。
