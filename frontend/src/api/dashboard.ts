@@ -1,4 +1,4 @@
-import axios from 'axios'
+import request from '../utils/request'
 
 export interface ManagedProject {
   id: string
@@ -6,6 +6,8 @@ export interface ManagedProject {
   repoUrl: string
   localPath: string
   defaultBranch: string
+  workflowPath: string
+  workspaceRoot: string
   stack: string
   status: string
   commandTemplates: string[]
@@ -45,6 +47,10 @@ export interface DashboardSnapshot {
   openWorkOrderCount: number
   runningAgentCount: number
   pendingReviewCount: number
+  retryQueueCount: number
+  workflowContractCount: number
+  orchestratorStatus: string
+  workspaceRoot: string
   projects: ManagedProject[]
   workOrders: WorkOrder[]
   agentRuns: AgentRun[]
@@ -52,7 +58,5 @@ export interface DashboardSnapshot {
 }
 
 export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
-  const { data } = await axios.get<DashboardSnapshot>('/api/v1/dashboard')
-  return data
+  return request.get<DashboardSnapshot, DashboardSnapshot>('/v1/dashboard')
 }
-

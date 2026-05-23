@@ -7,10 +7,13 @@ public record DashboardSnapshot(
         int openWorkOrderCount,
         int runningAgentCount,
         int pendingReviewCount,
+        int retryQueueCount,
+        int workflowContractCount,
+        String orchestratorStatus,
+        String workspaceRoot,
         List<ManagedProject> projects,
         List<WorkOrder> workOrders,
         List<AgentRun> agentRuns,
         List<ReviewItem> reviewItems
 ) {
 }
-

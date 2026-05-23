@@ -8,9 +8,10 @@ public record ManagedProject(
         String repoUrl,
         String localPath,
         String defaultBranch,
+        String workflowPath,
+        String workspaceRoot,
         String stack,
         String status,
         List<String> commandTemplates
 ) {
 }
-

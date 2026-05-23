@@ -19,6 +19,8 @@ public class DashboardQueryService {
                     "https://github.com/BonusWang/WikiForge",
                     "../WikiForge",
                     "main",
+                    "WORKFLOW.md",
+                    "D:/ForgeOps/workspaces/wikiforge",
                     "Java 21 / Spring Boot / Vue 3 / MySQL",
                     "active",
                     List.of("mvn -B test", "npm run build", "docker compose -f deploy/docker-compose.dev.yml config")
@@ -27,11 +29,13 @@ public class DashboardQueryService {
                     "team-workload",
                     "team-workload",
                     "https://github.com/BonusWang/team-workload",
-                    "",
+                    "D:/Projects/team-workload",
                     "main",
-                    "pending inspection",
-                    "pending",
-                    List.of()
+                    "WORKFLOW.md",
+                    "D:/ForgeOps/workspaces/team-workload",
+                    "Java / Vue 3 / Element Plus / MySQL",
+                    "inspected",
+                    List.of("mvn -B test", "npm run build")
             ),
             new ManagedProject(
                     "symphony-forgeops",
@@ -39,7 +43,9 @@ public class DashboardQueryService {
                     "https://github.com/BonusWang/SymphonyForgeOps",
                     ".",
                     "main",
-                    "Java 21 / Spring Boot / Vue 3",
+                    "WORKFLOW.md",
+                    "D:/ForgeOps/workspaces/symphony-forgeops",
+                    "Java 21 / Spring Boot / Vue 3 / MySQL 8",
                     "bootstrap",
                     List.of("mvn -B test", "npm run build")
             )
@@ -96,6 +102,10 @@ public class DashboardQueryService {
                 workOrders.size(),
                 agentRuns.size(),
                 reviewItems.size(),
+                1,
+                3,
+                "watching_work_orders",
+                "D:/ForgeOps/workspaces",
                 projects,
                 workOrders,
                 agentRuns,
@@ -103,4 +113,3 @@ public class DashboardQueryService {
         );
     }
 }
-

@@ -15,12 +15,11 @@ public class HealthController {
     private String version;
 
     @GetMapping
-    public Map<String, String> health() {
-        return Map.of(
+    public ApiResponse<Map<String, String>> health() {
+        return ApiResponse.ok(Map.of(
                 "status", "UP",
                 "service", "forgeops-api",
                 "version", version
-        );
+        ));
     }
 }
-

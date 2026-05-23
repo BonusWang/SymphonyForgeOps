@@ -17,8 +17,7 @@ public class DashboardController {
     }
 
     @GetMapping
-    public DashboardSnapshot getDashboard() {
-        return dashboardQueryService.snapshot();
+    public ApiResponse<DashboardSnapshot> getDashboard() {
+        return ApiResponse.ok(dashboardQueryService.snapshot());
     }
 }
-
