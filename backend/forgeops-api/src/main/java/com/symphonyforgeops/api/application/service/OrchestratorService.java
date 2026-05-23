@@ -41,7 +41,7 @@ public class OrchestratorService {
 
     public DispatchResult dispatch(String workOrderId) {
         WorkOrder workOrder = workOrderService.get(workOrderId);
-        WorkerHost worker = workerService.acquireAvailable();
+        WorkerHost worker = workerService.acquireAvailable(workOrder.implementationAgent());
         long workOrderNumericId = workOrderService.numericId(workOrderId);
         long agentRunId = createAgentRun(workOrderNumericId, workOrder.implementationAgent());
         event(agentRunId, "claimed", "Claimed work order " + workOrderId);

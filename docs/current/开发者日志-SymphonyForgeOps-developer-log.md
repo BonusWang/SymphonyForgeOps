@@ -118,7 +118,7 @@ WikiForge 的可复制价值是工程治理方式：
 
 架构调整：
 
-- 项目 Java 基线从 Java 21 调整为 Java 17，使用本机 Corretto 17 作为稳定执行环境。
+- 项目 Java 基线从 Java 21 调整为 Java 17；可使用本机 Corretto/Temurin 17，宿主机仍为 Java 8 时使用 `maven:3.9.9-eclipse-temurin-17` 容器验证。
 - 默认 datasource 改为复用 WikiForge MySQL 3306 的 `forgeops` schema。
 - Docker Compose 继续保留独立 MySQL 3308 模式。
 
@@ -188,3 +188,24 @@ docker compose -p forgeops-v1 -f deploy/docker-compose.dev.yml up -d --build
 
 - 新增 `CodexAgentDispatchTests`，先 RED 确认调度器不会调用 Codex adapter，再实现 GREEN。
 - targeted backend test 已通过。
+
+## 2026-05-24 Codex Worker 选择与测试库隔离
+
+本轮优化：
+
+- Codex work order 会优先选择 `workerKey`、`displayName` 或 `protocol` 中包含 `codex` 的在线 worker。
+- 无专用 Codex worker 时仍可降级到任意可用 worker，避免单机模式不可用。
+- 后端测试默认使用 `forgeops_test` schema，避免测试清理共享开发库 `forgeops`。
+- CI MySQL service 调整为创建 `forgeops_test` 和 `forgeops_test` 用户。
+
+调试记录：
+
+- 曾尝试 Testcontainers JDBC，但当前 Windows Docker API 对 Java Testcontainers 返回无效环境；已改用独立 MySQL schema。
+
+验证：
+
+- `CodexAgentDispatchTests` 先 RED：Codex 工单错误分配给 `manual-local`。
+- 修复后 targeted test 通过。
+- 新增 `TestDatabaseIsolationTests` 先 RED：测试连接了 `localhost:3306/forgeops`。
+- 修复后后端全量 `mvn -B -s <temp-settings> -pl forgeops-api -am test` 通过，8 tests。
+- 宿主机 `java`/`mvn` 当前仍指向 Java 8；复验改用 `maven:3.9.9-eclipse-temurin-17` 容器，连接 `host.docker.internal:3306/forgeops_test`，后端全量 8 tests 通过。

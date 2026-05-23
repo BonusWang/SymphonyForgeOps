@@ -150,6 +150,8 @@ v1.0 worker 模型：
 
 本机 SSH worker 使用 `protocol=ssh`、`host=localhost` 作为验收目标；复杂远程自动安装和主机池调度进入 v1.x。
 
+Codex 工单优先选择 worker key、display name 或 protocol 中包含 `codex` 的在线 worker；没有专用 Codex worker 时才降级到任意可用 worker。
+
 ### 3.8 Agent Runtime Adapter
 
 适配：
@@ -298,5 +300,9 @@ Stage completion requires matching gate:
 - T2 frontend build.
 - T3 Docker config.
 - T4 stage-level smoke.
+
+Backend verification must use Java 17. When the host shell still resolves `java`/`mvn` to Java 8, run backend tests through `maven:3.9.9-eclipse-temurin-17` and connect to `host.docker.internal:3306/forgeops_test`.
+
+后端测试默认使用 `forgeops_test` schema，不使用共享开发 schema `forgeops`。
 
 Every behavior change must have failing test evidence before implementation.

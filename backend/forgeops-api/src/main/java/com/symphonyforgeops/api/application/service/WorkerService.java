@@ -89,12 +89,31 @@ public class WorkerService {
         return get(workerKey);
     }
 
-    WorkerHost acquireAvailable() {
-        return list().stream()
+    WorkerHost acquireAvailable(String agentName) {
+        List<WorkerHost> availableWorkers = list().stream()
                 .filter(worker -> "online".equals(worker.status()))
                 .filter(worker -> worker.availableCapacity() > 0)
+                .toList();
+        if ("codex".equalsIgnoreCase(agentName == null ? "" : agentName.trim())) {
+            return availableWorkers.stream()
+                    .filter(this::isCodexWorker)
+                    .findFirst()
+                    .orElseGet(() -> firstAvailable(availableWorkers));
+        }
+        return firstAvailable(availableWorkers);
+    }
+
+    private WorkerHost firstAvailable(List<WorkerHost> availableWorkers) {
+        return availableWorkers.stream()
                 .findFirst()
                 .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT, "NO_WORKER_CAPACITY", "No online worker has available capacity."));
+    }
+
+    private boolean isCodexWorker(WorkerHost worker) {
+        String workerKey = worker.workerKey() == null ? "" : worker.workerKey().toLowerCase();
+        String displayName = worker.displayName() == null ? "" : worker.displayName().toLowerCase();
+        String protocol = worker.protocol() == null ? "" : worker.protocol().toLowerCase();
+        return workerKey.contains("codex") || displayName.contains("codex") || protocol.contains("codex");
     }
 
     long numericId(String workerKey) {

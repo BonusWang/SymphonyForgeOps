@@ -12,8 +12,8 @@
 - [x] GitHub `main` 已合并远端 Initial commit 并普通 push。
 - [x] 当前项目骨架已建立：Spring Boot API、Vue Dashboard、MySQL migration、Docker Compose。
 - [x] 已补充 openai/symphony + WikiForge 学习后的项目治理规则。
-- [x] 项目 Java 基线调整为 Java 17，并使用本机 Corretto 17 验证。
-- [ ] Maven 用户 settings 仍指向不可达私有 mirror，验证时需要临时 settings 或修复本机配置。
+- [x] 项目 Java 基线调整为 Java 17，并使用 Temurin/Corretto 17 路径验证。
+- [ ] 宿主机默认 Java 仍可能是 8；验证时需要显式 Java 17 或 `maven:3.9.9-eclipse-temurin-17` 容器。
 - [x] Dashboard 已从 MySQL 聚合读取。
 - [x] P1 WIP 已恢复并按 v1 路线重做。
 

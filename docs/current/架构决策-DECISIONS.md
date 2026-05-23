@@ -109,9 +109,9 @@ Docker Compose 可以保留独立 MySQL 服务用于干净部署，但 README �
 
 ## 2026-05-23 当前阻塞
 
-- 项目 Java 基线已调整为 Java 17，优先使用本机 Corretto 17。
+- 项目 Java 基线已调整为 Java 17，优先使用本机 Corretto/Temurin 17；宿主机仍为 Java 8 时使用 `maven:3.9.9-eclipse-temurin-17` 容器验证。
 - 不使用 Trae bundled JDK 25 作为项目执行环境。
-- 用户级 Maven settings 指向不可达私有 mirror；验证时需使用临时 settings 或修复本机 Maven 配置。
+- 用户级 Maven/JAVA_HOME 若不可用，验证时使用 Java 17 容器或显式 Java 17 环境。
 
 ## 2026-05-24 v1.0 单服务运行层决策
 
@@ -149,3 +149,15 @@ v1.0 保持 `forgeops-api` 单服务，但已经把运行层账本落库：
 - 默认 timeout 为 300 秒，可通过 `FORGEOPS_CODEX_TIMEOUT_SECONDS` 调整。
 - `FORGEOPS_CODEX_COMMAND_TEMPLATE` 只用于测试替身或本机 smoke override，正式路径保持 Codex CLI。
 - Claude Code / OpenHands 继续作为 adapter config 保存，真实外部执行进入后续切片。
+
+## 2026-05-24 测试库隔离决策
+
+后端集成测试默认使用独立 schema `forgeops_test`，不再连接共享开发 schema `forgeops`。
+
+原因：
+
+- 现有集成测试会清理多张运行账本表，直接连 `forgeops` 会删除本机 live 验收记录。
+- Testcontainers JDBC 在当前 Windows + Docker Desktop 环境中无法稳定获取 Docker API，不能作为本机默认测试方案。
+- 独立 schema 仍使用真实 MySQL 和 Flyway，能保持 DDL/SQL 行为与生产路径一致。
+
+CI 使用 `FORGEOPS_TEST_DATASOURCE_*` 指向 MySQL service 的 `forgeops_test` 数据库。

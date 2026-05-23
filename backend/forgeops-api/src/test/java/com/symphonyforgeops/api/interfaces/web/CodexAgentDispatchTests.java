@@ -108,6 +108,32 @@ class CodexAgentDispatchTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
+                                  "workerKey": "manual-local",
+                                  "displayName": "Manual Local Worker",
+                                  "protocol": "local",
+                                  "host": "localhost",
+                                  "capacity": 1,
+                                  "status": "online"
+                                }
+                                """))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/v1/workers/manual-local/heartbeat")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "status": "online",
+                                  "availableCapacity": 1,
+                                  "currentRuns": 0,
+                                  "lastError": null
+                                }
+                                """))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/v1/workers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
                                   "workerKey": "codex-local",
                                   "displayName": "Local Codex Worker",
                                   "protocol": "local",

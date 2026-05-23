@@ -108,9 +108,23 @@ Codex agent dispatch:
 
 GitHub Actions workflow `.github/workflows/ci.yml` runs:
 
-- Backend tests on Temurin Java 17 with MySQL 8.
+- Backend tests on Temurin Java 17 with MySQL 8 using the isolated `forgeops_test` schema.
 - Frontend install/build on Node 22 using `npm ci`.
 - Docker Compose config validation and image build.
+
+Local backend verification must also run on Java 17. If the host `java` still resolves to Java 8, use the existing Maven 17 container instead of Trae bundled JDK 25:
+
+```powershell
+docker run --rm `
+  -e FORGEOPS_TEST_DATASOURCE_URL="jdbc:mysql://host.docker.internal:3306/forgeops_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true" `
+  -e FORGEOPS_TEST_DATASOURCE_USERNAME="forgeops_test" `
+  -e FORGEOPS_TEST_DATASOURCE_PASSWORD="forgeops_test_password" `
+  -v "E:\github\SymphonyForgeOps:/workspace" `
+  -v "E:\repository:/m2/repository" `
+  -w /workspace `
+  maven:3.9.9-eclipse-temurin-17 `
+  mvn -B "-Dmaven.repo.local=/m2/repository" -f backend/pom.xml -pl forgeops-api -am test
+```
 
 ## MySQL 8
 
@@ -150,3 +164,15 @@ FORGEOPS_DATASOURCE_PASSWORD=forgeops_dev_password
 ```
 
 When deploying to another computer, keep the same variable names and change only host, port, username, and password.
+
+## Test Database
+
+Backend integration tests read `backend/forgeops-api/src/test/resources/application.yml` and default to a separate schema:
+
+```text
+Database: forgeops_test
+User: forgeops_test
+Password: forgeops_test_password
+```
+
+This keeps test cleanup from deleting the shared development `forgeops` control-plane records. CI uses the same schema through `FORGEOPS_TEST_DATASOURCE_*` variables.

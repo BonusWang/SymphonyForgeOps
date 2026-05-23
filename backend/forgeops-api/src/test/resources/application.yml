@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: ${FORGEOPS_TEST_DATASOURCE_URL:jdbc:mysql://localhost:3306/forgeops_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${FORGEOPS_TEST_DATASOURCE_USERNAME:forgeops_test}
+    password: ${FORGEOPS_TEST_DATASOURCE_PASSWORD:forgeops_test_password}
+    driver-class-name: ${FORGEOPS_TEST_DATASOURCE_DRIVER:com.mysql.cj.jdbc.Driver}
+
+forgeops:
+  version: 0.0.1-test

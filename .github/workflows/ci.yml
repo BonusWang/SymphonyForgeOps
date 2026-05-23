@@ -14,13 +14,13 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: forgeops_root_password
-          MYSQL_DATABASE: forgeops
-          MYSQL_USER: forgeops
-          MYSQL_PASSWORD: forgeops_dev_password
+          MYSQL_DATABASE: forgeops_test
+          MYSQL_USER: forgeops_test
+          MYSQL_PASSWORD: forgeops_test_password
         ports:
           - 3308:3306
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -uforgeops -pforgeops_dev_password --silent"
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uforgeops_test -pforgeops_test_password --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
@@ -33,9 +33,9 @@ jobs:
       - name: Test backend
         working-directory: backend
         env:
-          FORGEOPS_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3308/forgeops?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-          FORGEOPS_DATASOURCE_USERNAME: forgeops
-          FORGEOPS_DATASOURCE_PASSWORD: forgeops_dev_password
+          FORGEOPS_TEST_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3308/forgeops_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+          FORGEOPS_TEST_DATASOURCE_USERNAME: forgeops_test
+          FORGEOPS_TEST_DATASOURCE_PASSWORD: forgeops_test_password
         run: mvn -B -Dmaven.repo.local=$HOME/.m2/repository test
 
   frontend:
