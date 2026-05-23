@@ -1,5 +1,7 @@
 # SymphonyForgeOps
 
+脚手架已升级为个人 AI 研发控制台工程。
+
 SymphonyForgeOps is a personal AI development control console for managing independent projects, work orders, agent runs, tests, and code review gates.
 
 It is intentionally separate from WikiForge. WikiForge remains the knowledge product; SymphonyForgeOps is the development operating layer that can manage WikiForge, team-workload, and future independent repositories.
